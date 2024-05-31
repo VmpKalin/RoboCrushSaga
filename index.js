@@ -16,8 +16,16 @@ bot.on("callback_query", function (query) {
     if (query.game_short_name !== gameName) {
         bot.answerCallbackQuery(query.id, "Sorry, '" + query.game_short_name + "' is not available.");
     } else {
+        let username = "";
+        let id = "";
+        
+        if (query.message) {
+            id = query.from.id;
+            username = query.from.username
+        }
+        
         queries[query.id] = query;
-        let gameurl = "https://vmpkalin.github.io/RoboCrushSaga/";
+        let gameurl = "https://vmpkalin.github.io/RoboCrushSaga/?username="+username+"&id="+id;
         bot.answerCallbackQuery({
             callback_query_id: query.id,
             url: gameurl
