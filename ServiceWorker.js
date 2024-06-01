@@ -23,6 +23,8 @@ self.addEventListener('fetch', function (e) {
       let response = await caches.match(e.request);
       console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
       if (response) { return response; }
+      
+      console.log(`[Service Worker]  After if Fetching resource: ${e.request.url}`);
 
       response = await fetch(e.request);
       const cache = await caches.open(cacheName);
