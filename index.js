@@ -36,11 +36,11 @@ window.addEventListener("load", function () {
   }
 
   var buildUrl = "Build";
-  var loaderUrl = buildUrl + "/newout.loader.js";
+  var loaderUrl = buildUrl + "/newout2.loader.js";
   var config = {
-    dataUrl: buildUrl + "/newout.data",
-    frameworkUrl: buildUrl + "/newout.framework.js",
-    codeUrl: buildUrl + "/newout.wasm",
+    dataUrl: buildUrl + "/newout2.data",
+    frameworkUrl: buildUrl + "/newout2.framework.js",
+    codeUrl: buildUrl + "/newout2.wasm",
     streamingAssetsUrl: "StreamingAssets",
     companyName: "DefaultCompany",
     productName: "DessertPuzzle",

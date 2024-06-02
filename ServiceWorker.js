@@ -1,9 +1,9 @@
 const cacheName = "DefaultCompany-DessertPuzzle-1.0";
 const contentToCache = [
-    "Build/newout.loader.js",
-    "Build/newout.framework.js",
-    "Build/newout.data",
-    "Build/newout.wasm",
+    "Build/newout2.loader.js",
+    "Build/newout2.framework.js",
+    "Build/newout2.data",
+    "Build/newout2.wasm",
     "TemplateData/style.css"
 
 ];
@@ -23,18 +23,10 @@ self.addEventListener('fetch', function (e) {
       let response = await caches.match(e.request);
       console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
       if (response) { return response; }
-      
-      console.log(`[Service Worker]  After if Fetching resource: ${e.request.url}`);
 
       response = await fetch(e.request);
       const cache = await caches.open(cacheName);
       console.log(`[Service Worker] Caching new resource: ${e.request.url}`);
-
-      console.log("e.request: " + JSON.stringify(e.request));
-      console.log("response.clone(): " + JSON.stringify(response.clone()));
-
-      console.log(`[Service Worker] Caching new resource: ${e.request.url}`);
-
       cache.put(e.request, response.clone());
       return response;
     })());
