@@ -1,4 +1,4 @@
-const cacheName = "DefaultCompany-DessertPuzzle-1.0";
+const cacheName = "RoboComp-RoboTom-1.0";
 const contentToCache = [
     "Build/newout2.loader.js",
     "Build/newout2.framework.js",

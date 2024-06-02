@@ -42,8 +42,8 @@ window.addEventListener("load", function () {
     frameworkUrl: buildUrl + "/newout2.framework.js",
     codeUrl: buildUrl + "/newout2.wasm",
     streamingAssetsUrl: "StreamingAssets",
-    companyName: "DefaultCompany",
-    productName: "DessertPuzzle",
+    companyName: "RoboComp",
+    productName: "RoboTom",
     productVersion: "1.0",
     showBanner: unityShowBanner,
   };
