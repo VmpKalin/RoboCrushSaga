@@ -18,7 +18,7 @@ bot.on("callback_query", function (query) {
     } else {
         let username = "";
         let id = "";
-        
+        console.log(JSON.stringify(query));
         if (query.message) {
             id = query.from.id;
             username = query.from.username
@@ -26,6 +26,19 @@ bot.on("callback_query", function (query) {
         
         queries[query.id] = query;
         let gameurl = "https://vmpkalin.github.io/RoboCrushSaga/?username="+username+"&id="+id;
+        
+        // let chatId = query.message.chat.id;
+        // console.log("Chat id: "+chatId)
+        // const menuButtonWebApp = {
+        //     type: "web_app",
+        //     text: "Play in RoboTon",
+        //     web_app: {
+        //         url: gameurl
+        //     }
+        // };
+        
+        // bot.setChatMenuButton({chat_id: chatId, menu_button: menuButtonWebApp});
+
         bot.answerCallbackQuery({
             callback_query_id: query.id,
             url: gameurl

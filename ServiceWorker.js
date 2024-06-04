@@ -1,9 +1,9 @@
 const cacheName = "RoboComp-RoboTom-1.0";
 const contentToCache = [
-    "Build/newout2.loader.js",
-    "Build/newout2.framework.js",
-    "Build/newout2.data",
-    "Build/newout2.wasm",
+    "Build/Roboton.loader.js",
+    "Build/Roboton.framework.js",
+    "Build/Roboton.data",
+    "Build/Roboton.wasm",
     "TemplateData/style.css"
 
 ];

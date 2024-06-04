@@ -36,11 +36,11 @@ window.addEventListener("load", function () {
   }
 
   var buildUrl = "Build";
-  var loaderUrl = buildUrl + "/newout2.loader.js";
+  var loaderUrl = buildUrl + "/Roboton.loader.js";
   var config = {
-    dataUrl: buildUrl + "/newout2.data",
-    frameworkUrl: buildUrl + "/newout2.framework.js",
-    codeUrl: buildUrl + "/newout2.wasm",
+    dataUrl: buildUrl + "/Roboton.data",
+    frameworkUrl: buildUrl + "/Roboton.framework.js",
+    codeUrl: buildUrl + "/Roboton.wasm",
     streamingAssetsUrl: "StreamingAssets",
     companyName: "RoboComp",
     productName: "RoboTom",
@@ -71,6 +71,10 @@ window.addEventListener("load", function () {
     createUnityInstance(canvas, config, (progress) => {
       progressBarFull.style.width = 100 * progress + "%";
     }).then((unityInstance) => {
+      console.log('Instance created',window.Telegram.WebApp);
+      window.unityInstance = unityInstance;
+      window.unityInstance.SendMessage("TelegramController", "SetWebAppUser", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
+      
       unityInstanceRef = unityInstance;
       loadingBar.style.display = "none";
     }).catch((message) => {
