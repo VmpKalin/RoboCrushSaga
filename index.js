@@ -75,8 +75,8 @@ window.addEventListener("load", function () {
     }).then((unityInstance) => {
       console.log("Method: onLoad.then")
       console.log('Instance created',window.Telegram.WebApp);
-      window.unityInstance = unityInstance;
-      window.unityInstance.SendMessage("TelegramController", "SetWebAppUser", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
+      // window.unityInstance = unityInstance;
+      // window.unityInstance.SendMessage("TelegramController", "SetWebAppUser", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
       
       unityInstanceRef = unityInstance;
       loadingBar.style.display = "none";
