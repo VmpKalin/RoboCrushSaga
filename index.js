@@ -18,6 +18,7 @@ window.addEventListener("load", function () {
   // way that non-critical warnings and error messages are presented to the
   // user.
   function unityShowBanner(msg, type) {
+    console.log("Method: unityShowBanner")
     function updateBannerVisibility() {
       warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
     }
@@ -69,8 +70,10 @@ window.addEventListener("load", function () {
   script.src = loaderUrl;
   script.onload = () => {
     createUnityInstance(canvas, config, (progress) => {
+      console.log("Method: onLoad.CreateUnityInstance")
       progressBarFull.style.width = 100 * progress + "%";
     }).then((unityInstance) => {
+      console.log("Method: onLoad.then")
       console.log('Instance created',window.Telegram.WebApp);
       window.unityInstance = unityInstance;
       window.unityInstance.SendMessage("TelegramController", "SetWebAppUser", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
