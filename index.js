@@ -74,7 +74,9 @@ window.addEventListener("load", function () {
       try {
         console.log('Instance created',window.Telegram.WebApp);
         window.unityInstance = unityInstance;
-        window.unityInstance.SendMessage("TelegramController", "SetWebAppUser", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
+        let user = JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user);
+        console.log("Telegram user data:", user)
+        window.unityInstance.SendMessage("TelegramController", "SetWebAppUser", user);
       } catch (e) {
           console.error('Failed to access Telegram.WebApp:', e);
       }
