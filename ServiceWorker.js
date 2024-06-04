@@ -25,6 +25,11 @@ self.addEventListener('fetch', function (e) {
       if (response) { return response; }
 
       response = await fetch(e.request);
+      if (e.request.method == 'POST') {
+        console.log("Skip unsupported method")
+        return;
+      }
+
       const cache = await caches.open(cacheName);
       console.log(`[Service Worker] Caching new resource: ${e.request.url}`);
       cache.put(e.request, response.clone());
