@@ -33,8 +33,9 @@ self.addEventListener('fetch', function (e) {
   
         response = await fetch(e.request);
         if (e.request.method == 'POST') {
-          console.error("Skip unsupported method")
-          return response;
+            console.error("Skip unsupported method")
+            console.error("Data:", e)
+            return response;
         }
   
         const cache = await caches.open(cacheName);

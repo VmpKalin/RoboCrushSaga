@@ -71,9 +71,6 @@ window.addEventListener("load", function () {
     createUnityInstance(canvas, config, (progress) => {
       progressBarFull.style.width = 100 * progress + "%";
     }).then((unityInstance) => {
-      unityInstanceRef = unityInstance;
-      loadingBar.style.display = "none";
-
       try {
         console.log('Instance created',window.Telegram.WebApp);
         window.unityInstance = unityInstance;
@@ -81,7 +78,8 @@ window.addEventListener("load", function () {
       } catch (e) {
           console.error('Failed to access Telegram.WebApp:', e);
       }
-      
+      unityInstanceRef = unityInstance;
+      loadingBar.style.display = "none";      
     }).catch((message) => {
       alert(message);
     });
