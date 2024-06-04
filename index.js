@@ -1,6 +1,6 @@
 window.addEventListener("load", function () {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("ServiceWorker.js");
+      // navigator.serviceWorker.register("ServiceWorker.js");
     }
   });
   var unityInstanceRef;
