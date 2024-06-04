@@ -79,7 +79,7 @@ window.addEventListener("load", function () {
         window.unityInstance = unityInstance;
         window.unityInstance.SendMessage("TelegramController", "SetWebAppUser", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
       } catch (e) {
-          console.error('Failed to cache request:', e);
+          console.error('Failed to access Telegram.WebApp:', e);
       }
       
     }).catch((message) => {
