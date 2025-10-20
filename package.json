@@ -1,17 +1,37 @@
 {
-  "name": "gamebuilds",
+  "name": "robocrushsaga",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "RoboTon - A Unity WebGL puzzle game integrated with Telegram Bot API for seamless gameplay experience within Telegram.",
+  "main": "robo_server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node robo_server.js"
+    "start": "node robo_server.js",
+    "dev": "nodemon robo_server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "telegram",
+    "bot",
+    "unity",
+    "webgl",
+    "game",
+    "puzzle",
+    "roboton"
+  ],
+  "author": "VmpKalin",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VmpKalin/RoboCrushSaga.git"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
     "express": "^4.19.2",
     "node-telegram-bot-api": "^0.66.0",
     "telegraf": "^4.16.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
   }
 }

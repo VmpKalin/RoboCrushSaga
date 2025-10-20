@@ -1,89 +1,195 @@
-window.addEventListener("load", function () {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("ServiceWorker.js");
-    }
-  });
-  var unityInstanceRef;
-  var unsubscribe;
-  var container = document.querySelector("#unity-container");
-  var canvas = document.querySelector("#unity-canvas");
-  var loadingBar = document.querySelector("#unity-loading-bar");
-  var progressBarFull = document.querySelector("#unity-progress-bar-full");
-  var warningBanner = document.querySelector("#unity-warning");
+/**
+ * RoboTon Unity WebGL Game Loader
+ * Handles Unity game initialization and Telegram WebApp integration
+ */
 
-  // Shows a temporary message banner/ribbon for a few seconds, or
-  // a permanent error message on top of the canvas if type=='error'.
-  // If type=='warning', a yellow highlight color is used.
-  // Modify or remove this function to customize the visually presented
-  // way that non-critical warnings and error messages are presented to the
-  // user.
-  function unityShowBanner(msg, type) {
-    function updateBannerVisibility() {
-      warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-    }
-    var div = document.createElement('div');
-    div.innerHTML = msg;
-    warningBanner.appendChild(div);
-    if (type == 'error') div.style = 'background: red; padding: 10px;';
-    else {
-      if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-      setTimeout(function() {
-        warningBanner.removeChild(div);
-        updateBannerVisibility();
-      }, 5000);
-    }
-    updateBannerVisibility();
+// Global variables
+let unityInstanceRef = null;
+let unsubscribe = null;
+
+// DOM elements
+const container = document.querySelector("#unity-container");
+const canvas = document.querySelector("#unity-canvas");
+const loadingBar = document.querySelector("#unity-loading-bar");
+const progressBarFull = document.querySelector("#unity-progress-bar-full");
+const warningBanner = document.querySelector("#unity-warning");
+
+/**
+ * Initialize service worker when page loads
+ */
+window.addEventListener("load", () => {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("ServiceWorker.js")
+      .then(registration => {
+        console.log("ServiceWorker registered successfully:", registration);
+      })
+      .catch(error => {
+        console.error("ServiceWorker registration failed:", error);
+      });
+  }
+});
+
+/**
+ * Display banner messages for Unity warnings and errors
+ * @param {string} msg - Message to display
+ * @param {string} type - Type of message: 'error', 'warning', or 'info'
+ */
+function unityShowBanner(msg, type = 'info') {
+  /**
+   * Update banner visibility based on number of children
+   */
+  function updateBannerVisibility() {
+    warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
   }
 
-  var buildUrl = "Build";
-  var loaderUrl = buildUrl + "/Roboton.loader.js";
-  var config = {
-    dataUrl: buildUrl + "/Roboton.data",
-    frameworkUrl: buildUrl + "/Roboton.framework.js",
-    codeUrl: buildUrl + "/Roboton.wasm",
-    streamingAssetsUrl: "StreamingAssets",
-    companyName: "RoboComp",
-    productName: "RoboTom",
-    productVersion: "1.0",
-    showBanner: unityShowBanner,
-  };
+  // Create message element
+  const messageDiv = document.createElement('div');
+  messageDiv.innerHTML = msg;
+  messageDiv.style.padding = '10px';
+  messageDiv.style.margin = '5px 0';
+  messageDiv.style.borderRadius = '4px';
 
-  // By default Unity keeps WebGL canvas render target size matched with
-  // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-  // Set this to false if you want to decouple this synchronization from
-  // happening inside the engine, and you would instead like to size up
-  // the canvas DOM size and WebGL render target sizes yourself.
-  // config.matchWebGLToCanvasSize = false;
+  // Set appropriate styling based on message type
+  switch (type) {
+    case 'error':
+      messageDiv.style.background = '#ff4444';
+      messageDiv.style.color = 'white';
+      break;
+    case 'warning':
+      messageDiv.style.background = '#ffaa00';
+      messageDiv.style.color = 'black';
+      break;
+    default:
+      messageDiv.style.background = '#4444ff';
+      messageDiv.style.color = 'white';
+  }
 
+  warningBanner.appendChild(messageDiv);
+
+  // Auto-remove non-error messages after 5 seconds
+  if (type !== 'error') {
+    setTimeout(() => {
+      if (warningBanner.contains(messageDiv)) {
+        warningBanner.removeChild(messageDiv);
+        updateBannerVisibility();
+      }
+    }, 5000);
+  }
+
+  updateBannerVisibility();
+}
+
+/**
+ * Unity WebGL configuration
+ */
+const BUILD_URL = "Build";
+const LOADER_URL = `${BUILD_URL}/Roboton.loader.js`;
+
+const unityConfig = {
+  dataUrl: `${BUILD_URL}/Roboton.data`,
+  frameworkUrl: `${BUILD_URL}/Roboton.framework.js`,
+  codeUrl: `${BUILD_URL}/Roboton.wasm`,
+  streamingAssetsUrl: "StreamingAssets",
+  companyName: "RoboComp",
+  productName: "RoboTom",
+  productVersion: "1.0",
+  showBanner: unityShowBanner,
+};
+
+// Optional: Decouple WebGL canvas size from DOM size
+// unityConfig.matchWebGLToCanvasSize = false;
+
+/**
+ * Configure mobile viewport for better mobile experience
+ */
+function configureMobileViewport() {
   if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-    // Mobile device style: fill the whole browser client area with the game canvas:
-    var meta = document.createElement('meta');
+    const meta = document.createElement('meta');
     meta.name = 'viewport';
     meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
     document.getElementsByTagName('head')[0].appendChild(meta);
+    
+    console.log("Mobile viewport configured");
   }
+}
 
-  loadingBar.style.display = "block";
-
-  var script = document.createElement("script");
-  script.src = loaderUrl;
-  script.onload = () => {
-    createUnityInstance(canvas, config, (progress) => {
-      progressBarFull.style.width = 100 * progress + "%";
-    }).then((unityInstance) => {
-      try {
-        console.log('Instance created',window.Telegram.WebApp);
-        window.unityInstance = unityInstance;
-        let user = JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user);
-        console.log("Telegram user data:", user)
-        window.unityInstance.SendMessage("TelegramController", "SetWebAppUser", user);
-      } catch (e) {
-          console.error('Failed to access Telegram.WebApp:', e);
+/**
+ * Initialize Telegram WebApp integration
+ * @param {Object} unityInstance - Unity game instance
+ */
+function initializeTelegramIntegration(unityInstance) {
+  try {
+    if (window.Telegram && window.Telegram.WebApp) {
+      console.log('Telegram WebApp detected:', window.Telegram.WebApp);
+      
+      // Get user data from Telegram
+      const userData = window.Telegram.WebApp.initDataUnsafe.user;
+      if (userData) {
+        const userDataJson = JSON.stringify(userData);
+        console.log("Telegram user data:", userDataJson);
+        
+        // Send user data to Unity game
+        unityInstance.SendMessage("TelegramController", "SetWebAppUser", userDataJson);
+      } else {
+        console.warn("No Telegram user data available");
       }
+    } else {
+      console.log("Running outside Telegram WebApp environment");
+    }
+  } catch (error) {
+    console.error('Failed to initialize Telegram integration:', error);
+  }
+}
+
+// Configure mobile viewport and show loading bar
+configureMobileViewport();
+loadingBar.style.display = "block";
+
+/**
+ * Load and initialize Unity WebGL game
+ */
+function loadUnityGame() {
+  const script = document.createElement("script");
+  script.src = LOADER_URL;
+  
+  script.onload = () => {
+    console.log("Unity loader script loaded successfully");
+    
+    // Create Unity instance with progress callback
+    createUnityInstance(canvas, unityConfig, (progress) => {
+      // Update loading progress bar
+      progressBarFull.style.width = `${100 * progress}%`;
+    })
+    .then((unityInstance) => {
+      console.log('Unity instance created successfully');
+      
+      // Store instance globally
+      window.unityInstance = unityInstance;
       unityInstanceRef = unityInstance;
-      loadingBar.style.display = "none";      
-    }).catch((message) => {
-      alert(message);
+      
+      // Initialize Telegram integration
+      initializeTelegramIntegration(unityInstance);
+      
+      // Hide loading bar
+      loadingBar.style.display = "none";
+      
+      console.log("Game loaded and ready to play!");
+    })
+    .catch((error) => {
+      console.error("Failed to create Unity instance:", error);
+      unityShowBanner(`Failed to load game: ${error}`, 'error');
+      loadingBar.style.display = "none";
     });
   };
+  
+  script.onerror = () => {
+    console.error("Failed to load Unity loader script");
+    unityShowBanner("Failed to load game resources. Please refresh the page.", 'error');
+    loadingBar.style.display = "none";
+  };
+  
   document.body.appendChild(script);
+}
+
+// Start loading the game
+loadUnityGame();
